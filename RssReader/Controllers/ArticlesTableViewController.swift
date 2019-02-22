@@ -8,44 +8,83 @@
 
 import UIKit
 import RealmSwift
-
+import FeedKit
 class ArticlesTableViewController: UITableViewController {
+    
     let realm = try! Realm()
+    let article = Article()
+  
     var selectedCategory : Category? {
         didSet{
-         loadArticles()
+            loadArticles()
         }
- 
     }
-    var articles : Results<Article>?
+    var articles : [RSSFeedItem]?
+    
+    var  feed : RSSFeed?
+    
+    
     override func viewDidLoad() {
+       
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
-    }
+        tableView.rowHeight = UITableView.automaticDimension
+   //self.tableView.register(UINib(nibName: "Tablecell", bundle: nil), forCellReuseIdentifier: "cell")
+        loadArticles()
+     
+        
+        }
+        
+    
 
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return articles?.count ?? 1
+    return articles?.count ?? 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "articleCell" ,for : indexPath) as! CustomTableViewCell
-        cell.titre.text = articles?[indexPath.row].titre
-        cell.articleBody.text = articles?[indexPath.row].contenu
-        
+       let cell = Bundle.main.loadNibNamed("CustomTableViewCell", owner: self, options: nil)?.first as! CustomTableViewCell
+        print("\(articles?.count ?? 0)")
+        cell.titre.text = articles?[indexPath.row].title
+       cell.articleBody.text = articles?[indexPath.row].description
         return cell
     }
 
     func loadArticles(){
         
-        articles = selectedCategory?.articles.sorted(byKeyPath: "date", ascending: true)
-        tableView.reloadData()
+        
+        if let currentCategory = selectedCategory {
+            let feedURL = URL(string: currentCategory.Url)!
+            let parser = FeedParser(URL: feedURL)
+            
+            parser.parseAsync { [weak self] (result) in
+               
+                guard let feed = result.rssFeed, result.isSuccess else {
+                    print(result.error!)
+                    return
+                }
+                
+                self?.articles = feed.items
+                
+                // Then back to the Main thread to update the UI.
+                DispatchQueue.main.async {
+                  
+                    self?.tableView.reloadData()
+                }
+                
+            }
+        
     }
-
+    func save(article : Article){
+        
+        do{
+            try realm.write {
+                realm.add(article)
+            }
+            
+        }catch{
+            print("Error save article , \(error)")
+        }
+    }
+}
 }
