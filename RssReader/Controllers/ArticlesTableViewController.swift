@@ -28,14 +28,17 @@ class ArticlesTableViewController: UITableViewController {
        
         super.viewDidLoad()
         tableView.rowHeight = UITableView.automaticDimension
-   //self.tableView.register(UINib(nibName: "Tablecell", bundle: nil), forCellReuseIdentifier: "cell")
+        tableView.estimatedRowHeight = UITableView.automaticDimension
         loadArticles()
+        tableView.separatorStyle = .none
      
         
         }
         
     
-
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -44,8 +47,7 @@ class ArticlesTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
        let cell = Bundle.main.loadNibNamed("CustomTableViewCell", owner: self, options: nil)?.first as! CustomTableViewCell
-        print("\(articles?.count ?? 0)")
-        cell.titre.text = articles?[indexPath.row].title
+                cell.titre.text = articles?[indexPath.row].title
        cell.articleBody.text = articles?[indexPath.row].description
         return cell
     }
@@ -75,6 +77,7 @@ class ArticlesTableViewController: UITableViewController {
             }
         
     }
+    }
     func save(article : Article){
         
         do{
@@ -86,5 +89,5 @@ class ArticlesTableViewController: UITableViewController {
             print("Error save article , \(error)")
         }
     }
-}
+
 }

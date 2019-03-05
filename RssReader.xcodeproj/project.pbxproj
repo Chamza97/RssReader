@@ -59,6 +59,13 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		84698B04222EEF8300A1809B /* ModelView */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ModelView;
+			sourceTree = "<group>";
+		};
 		84E6F35B221EED1F002D4B03 = {
 			isa = PBXGroup;
 			children = (
@@ -80,6 +87,7 @@
 		84E6F366221EED1F002D4B03 /* RssReader */ = {
 			isa = PBXGroup;
 			children = (
+				84698B04222EEF8300A1809B /* ModelView */,
 				84E6F379221EED36002D4B03 /* Controllers */,
 				84E6F37C221EED9E002D4B03 /* Models */,
 				84E6F37B221EED4C002D4B03 /* Views */,
