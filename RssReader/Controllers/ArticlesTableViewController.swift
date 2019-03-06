@@ -19,7 +19,7 @@ class ArticlesTableViewController: UITableViewController {
             loadArticles()
         }
     }
-    var articles : [RSSFeedItem]?
+    var articles = ArticleModelView()
     
     var  feed : RSSFeed?
     
@@ -42,13 +42,13 @@ class ArticlesTableViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return articles?.count ?? 1
+        return articles.articlesArray.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
        let cell = Bundle.main.loadNibNamed("CustomTableViewCell", owner: self, options: nil)?.first as! CustomTableViewCell
-                cell.titre.text = articles?[indexPath.row].title
-       cell.articleBody.text = articles?[indexPath.row].description
+                cell.titre.text = articles.articlesArray[indexPath.row].titre
+       cell.articleBody.text = articles.articlesArray[indexPath.row].contenu
         return cell
     }
 
@@ -66,7 +66,7 @@ class ArticlesTableViewController: UITableViewController {
                     return
                 }
                 
-                self?.articles = feed.items
+                self?.articles = ArticleModelView(feedResult: feed)
                 
                 // Then back to the Main thread to update the UI.
                 DispatchQueue.main.async {

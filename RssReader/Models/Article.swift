@@ -13,6 +13,7 @@ class  Article : Object {
     
     @objc dynamic var titre: String = ""
     @objc dynamic var contenu : String = ""
-    @objc dynamic    var date : Date?
+  
     var parentCategory = LinkingObjects(fromType: Category.self , property : "articles")
+ 
 }
